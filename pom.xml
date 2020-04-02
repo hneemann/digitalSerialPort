@@ -5,9 +5,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>de.neemann.digital</groupId>
-    <artifactId>pluginExample</artifactId>
+    <artifactId>ComPlugin</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <name>pluginExample</name>
+    <name>ComPlugin</name>
 
     <properties>
         <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
@@ -41,7 +41,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
 							<!--       set your ComponentSource class name here! -->
-                            <mainClass>de.neemann.digital.plugin.DemoComponentSource</mainClass>
+                            <mainClass>de.neemann.digital.plugin.COMComponentSource</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -50,6 +50,13 @@
     </build>
 
     <dependencies>
+
+        <dependency>
+            <groupId>com.neuronrobotics</groupId>
+            <artifactId>nrjavaserial</artifactId>
+            <version>3.11.0</version>
+        </dependency>
+
         <dependency>
             <groupId>de.neemann.digital</groupId>
             <artifactId>Digital</artifactId>
