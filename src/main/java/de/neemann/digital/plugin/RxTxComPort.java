@@ -39,11 +39,11 @@ public class RxTxComPort implements COMInterface {
                 thread.start();
             } catch (UnsupportedCommOperationException e) {
                 serialPort.close();
-                throw createNodeException("invalid port parameter", e);
+                throw createNodeException("invalid port parameters for "+portName, e);
             }
 
         } catch (NoSuchPortException e) {
-            throw createNodeException("error initializing comm port", e);
+            throw createNodeException("error initializing port "+portName, e);
         }
     }
 
