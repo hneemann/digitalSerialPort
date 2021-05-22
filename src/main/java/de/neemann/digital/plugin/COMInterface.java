@@ -22,4 +22,26 @@ public interface COMInterface {
      * Closes the port.
      */
     void close();
+
+    /**
+     * Checks if there is new data in the receive buffer
+     *
+     * @return true if new data is available
+     */
+    boolean available();
+
+    /**
+     * Subscribes a DataAvailInterface object which will be notified when new data is received from the
+     * serial port
+     *
+     * @param sub the observer object
+     */
+    void subscribeToDataAvail(DataAvailInterface sub);
+
+    /**
+     * Unsubscribes a previously subscribed DataAvailInterface
+     *
+     * @param sub the observer object
+     */
+    void unSubscribeToDataAvail(DataAvailInterface sub);
 }
