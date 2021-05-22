@@ -3,12 +3,14 @@ package de.neemann.digital.plugin;
 import de.neemann.digital.core.*;
 import de.neemann.digital.core.element.*;
 
+import javax.swing.*;
+
 import static de.neemann.digital.core.element.PinInfo.input;
 
 /**
  * A simple ComPort
  */
-public class ComPort extends Node implements Element {
+public class ComPort extends Node implements Element, DataAvailInterface {
 
     private static final Key<String> COM_PORT =
             new Key<>("comPort", "/dev/ttyUSB0")
@@ -61,7 +63,7 @@ public class ComPort extends Node implements Element {
      */
     public ComPort(ElementAttributes attr) {
         d_out = new ObservableValue("D_r", 8).setDescription("Data read from the physical port.");
-        avail = new ObservableValue("av", 1).setDescription("If set to one there was data available. Valid only if rd=1 and c is rising.");
+        avail = new ObservableValue("av", 1).setDescription("If set to one there is data available.");
         portName = attr.get(COM_PORT);
         baudRate = attr.get(BAUD_RATE);
         comData = -1;
@@ -91,11 +93,10 @@ public class ComPort extends Node implements Element {
     public void writeOutputs() {
         if (comData < 0) {
             d_out.setToHighZ();
-            avail.setBool(false);
         } else {
             d_out.setValue(comData);
-            avail.setBool(true);
         }
+        avail.setBool(comInterface.available());
     }
 
     @Override
@@ -113,10 +114,16 @@ public class ComPort extends Node implements Element {
 
     @Override
     public void init(Model model) throws NodeException {
-        comInterface = new RxTxComPort(portName, baudRate);
+        comInterface = new de.neemann.digital.plugin.JSerialComPort(portName, baudRate);
+        comInterface.subscribeToDataAvail(this);
         model.addObserver(modelEvent -> {
-            if (modelEvent.equals(ModelEvent.STOPPED))
+            if (modelEvent.equals(ModelEvent.CLOSED))
                 comInterface.close();
-        }, ModelEvent.STOPPED);
+        }, ModelEvent.CLOSED.getType());
+    }
+
+    @Override
+    public void onDataAvailable() {
+        getModel().modify(this::hasChanged);
     }
 }
